@@ -1,20 +1,31 @@
 
 from pmdarima import auto_arima
 import pandas as pd
+import ta
+from sklearn.linear_model import LinearRegression
 
-def determiner(df, timeFrame):
+
+def master_mind(df: pd.DataFrame, timeFrame):
     print('Try to determine ...')
     if df is not None:
-        # Fit the AutoARIMA model
-        model = auto_arima(df['y'], seasonal=False, suppress_warnings=True)
+        df['SMA'] = ta.trend.sma_indicator(df['close'], window=20, fillna=True)  # Simple Moving Average
+        df['RSI'] = ta.momentum.rsi(df['close'], fillna=True)  # Relative Strength Index
 
-        print(df)
-        print(df.index[-1].ds)
-        # Forecast future values
-        future_dates = pd.date_range(start=df.index[-1]['ds'], periods=14, freq=timeFrame)
-        forecasted_values = model.predict(n_periods=len(future_dates))
+        # Prepare the data for regression
+        X = df[['SMA', 'RSI']] 
+        y = df['close']
 
-        # Print the forecasted values
-        forecast_df = pd.DataFrame({'ds': future_dates, 'yhat': forecasted_values})
-        forecast_df = forecast_df.set_index('ds')
-        print(forecast_df)
+        # Create and fit the Linear Regression model
+        model = LinearRegression()
+        model.fit(X, y)
+
+
+        # Generate predictions for future data
+        future_sma = df['SMA'].iloc[-1] 
+        future_rsi = df['RSI'].iloc[-1] 
+        future_data = pd.DataFrame({'SMA': [future_sma], 'RSI': [future_rsi]})
+        prediction = model.predict(future_data)
+
+        print("Predicted close Price:", prediction)
+
+        return prediction

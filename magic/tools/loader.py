@@ -1,33 +1,19 @@
-import requests
-import json
+from datetime import datetime, timedelta
 import pandas as pd
 
 from configs import *
+from tools.utils import market_api_call, json_to_df
 
 
-def getMarketData(symbol: str, resolution: str, from_ts: int, to_ts:int):
+def load_real_data():
+    print("Loading realtime data ...")
+    data = market_api_call(
+        symbol=SYMBOL, 
+        resolution=RESOLUTION, 
+        from_ts=str(round((CURRENT_DATE - timedelta(SHORT_PERIOD)).timestamp())),
+        to_ts=str(round(CURRENT_DATE.timestamp())),
+    )
+    df = json_to_df(data)
+    print("Loading realtime data completed ...")
 
-    params = {
-        'symbol': symbol,
-        'resolution': resolution,
-        'from': str(from_ts),
-        'to': str(to_ts)
-    }
-    response = requests.get(MARKET_URL, params=params)
-    if response.status_code == 200:
-        data = response.json()
-        return data
-    else:
-        print('Error:', response.status_code)
-        return None
-
-
-def dataLoader():
-    print("Loading data ...")
-    data = getMarketData(symbol=SYMBOL, resolution= RESOLUTION, from_ts=1657653939, to_ts=1687756939) 
-    df = pd.DataFrame(data)
-    df = df[['t', 'c']]
-    df.columns = ['ds', 'y']
-    df['ds'] = pd.to_datetime(df['ds'], unit='s') 
-    print("Data Loaded ...")
     return df

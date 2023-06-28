@@ -14,7 +14,8 @@ SHORT_PERIOD = 180
 
 
 
-MOCK_D_PATH = os.getcwd() + '/mockD/'
+MOCK_D_PATH = os.getcwd() + '/../mockD/'
 
-ENV = 'PRODUCTION'
+
+ENV = 'DEV'
 GEN_MOCK = False

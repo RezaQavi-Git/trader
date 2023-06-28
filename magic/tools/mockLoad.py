@@ -30,6 +30,7 @@ def generate_mock_data():
     with open(MOCK_D_PATH + "mock_{0}_{1}.json".format(SYMBOL, RESOLUTION), "w") as outfile:
         outfile.write(json.dumps(data, indent=4))
 
+        outfile.close()
     print("Mock data generated ...")
 
 
@@ -38,6 +39,7 @@ def load_mock_data():
     data = None
     with open(MOCK_D_PATH + "mock_{0}_{1}.json".format(SYMBOL, RESOLUTION), "r") as file:
         data = json.load(file)
-    
+
+        file.close()
     df = json_to_df(data)
     return df

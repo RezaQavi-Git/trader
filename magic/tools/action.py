@@ -3,10 +3,9 @@ from datetime import datetime
 def calculate_change(close, pred):
     return round((1 - (pred / close)) * 100, 5)
 
-def wrote_to_file(pred):
-
+def wrote_to_file(pred, close):
     with open('prediction.txt', 'a') as out:
-        out.write(str(datetime.now()) + ',' + str(pred) + '\n')
+        out.write(str(datetime.now()) + ',' + str(pred) + ',' + str(close) + '\n')
 
         out.close()
 
@@ -21,4 +20,4 @@ def make_action(last_record, prediction):
         print("Decreasing")
     print(calculate_change(close=last_record_close, pred=prediction_close))
 
-    wrote_to_file(pred=prediction_close)
+    wrote_to_file(pred=prediction_close, close=last_record_close)

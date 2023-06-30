@@ -2,16 +2,17 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 from configs import *
-from tools.utils import market_api_call, json_to_df
+from tools.utils import market_api_call, json_to_df, convert_period
 
 
 def load_real_data():
     print("Loading realtime data ...")
+    now = datetime.now()
     data = market_api_call(
         symbol=SYMBOL, 
-        resolution=RESOLUTION, 
-        from_ts=str(round((CURRENT_DATE - timedelta(SHORT_PERIOD)).timestamp())),
-        to_ts=str(round(CURRENT_DATE.timestamp())),
+        resolution=API_RESOLUTION, 
+        from_ts=str(round((now - timedelta(hours=convert_period(SHORT_PERIOD))).timestamp())),
+        to_ts=str(round(now.timestamp())),
     )
     df = json_to_df(data)
     print("Loading realtime data completed ...")

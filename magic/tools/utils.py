@@ -32,3 +32,8 @@ def json_to_df(json) -> pd.DataFrame:
     df.columns = ['time', 'close', 'open', 'high', 'low', 'volume']
     df['ds'] = pd.to_datetime(df['time'], unit='s') 
     return df
+
+
+def convert_period(period):
+
+    return (period * 24)
